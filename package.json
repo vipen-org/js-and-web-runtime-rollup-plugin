@@ -1,7 +1,7 @@
 {
   "name": "@vipen/js-and-web-runtime-rollup-plugin",
   "description": "js-and-web-runtime plugin for rollup.",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "./dist/plugin.mjs",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
