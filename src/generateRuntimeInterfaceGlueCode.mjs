@@ -1,4 +1,4 @@
-export default function(context) {
+export default function(has_static_context) {
 	let glue_code = ``
 
 	glue_code += `import {initializeRuntimeFromData} from "@vipen-internal/js-and-web-runtime"\n`
@@ -17,16 +17,16 @@ export default function(context) {
 
 	for (const method of runtime_methods) {
 		// do not export "loadStaticResource" in main project module files
-		if (context === "main" && method === "loadStaticResource") continue
+		if (!has_static_context && method === "loadStaticResource") continue
 		// do not export "loadResource" in resources/ module files
-		if (context !== "main" && method === "loadResource") continue
+		if (has_static_context && method === "loadResource") continue
 
 		glue_code += `export function ${method}(...args) { return runtime.${method}(...args); }\n`
 
 		exported_methods.push(method)
 	}
 
-	if (context === "main") {
+	if (!has_static_context) {
 		glue_code += `loadResource.asURL = function loadResourceAsURL(...args) { return runtime.loadResource.asURL(...args); }\n`
 	} else {
 		glue_code += `loadStaticResource.asURL = function loadStaticResourceAsURL(...args) { return runtime.loadStaticResource.asURL(...args); }\n`

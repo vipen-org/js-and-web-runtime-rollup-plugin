@@ -1,16 +1,16 @@
 // Code is based off of https://rollupjs.org/plugin-development/#a-simple-example
 import generateRuntimeInterfaceGlueCode from "./generateRuntimeInterfaceGlueCode.mjs"
 
-async function loadVirtualModule(context, runtime_data) {
+async function loadVirtualModule(has_static_context, runtime_data) {
 	let virtual_module = ``
 
 	virtual_module += `const runtime_data = ` + JSON.stringify(runtime_data, null, 4) + ";\n"
-	virtual_module += generateRuntimeInterfaceGlueCode(context)
+	virtual_module += generateRuntimeInterfaceGlueCode(has_static_context)
 
 	return virtual_module
 }
 
-export default function(context, runtime_data) {
+export default function(has_static_context, runtime_data) {
 	return function VipenJsRuntimePlugin() {
 		return {
 			name: "vipen-js-runtime-plugin",
@@ -29,7 +29,7 @@ export default function(context, runtime_data) {
 
 			async load(id) {
 				if (id === "@vipen/target-js") {
-					return await loadVirtualModule(context, runtime_data)
+					return await loadVirtualModule(has_static_context, runtime_data)
 				} else if (id === "@vipen-internal/js-and-web-runtime") {
 					return "%%%VIPEN_RUNTIME_CODE%%%"
 				}
